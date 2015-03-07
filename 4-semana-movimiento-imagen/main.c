@@ -11,8 +11,6 @@
 
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
-#include <math.h>
-
 
 char * nombreVentanaImagen = "escenario";
 
@@ -51,6 +49,7 @@ void _mezclaImagenes(IplImage* fondo, IplImage* obj, int posx, int posy, IplImag
         //comprobamos que las posiciones de incio sean correctas
 
         if ( posy <= (fondo -> height - obj -> height) && posx <= fondo -> width - obj -> width ){
+            //TODO store mascara in somewhere
             IplImage * mascara = mascaraImagen(obj);
 
             //return mascara;
@@ -90,6 +89,7 @@ void _mezclaImagenes(IplImage* fondo, IplImage* obj, int posx, int posy, IplImag
 
         } else {
             printf("Error en posicion de inicio");
+            printf("Algo %i",posx);
         }
 
 
@@ -233,7 +233,7 @@ int main(int argc, char** argv) {
 
     cvNamedWindow(nombreVentanaImagen, 1);
 
-    desplazar(Img1, Img2, 0, 0, 200, 40, 50, 10);
+    desplazar(Img1, Img2, 0, 0, 200, 100, 500, 2);
 
     cvWaitKey(0);
 
