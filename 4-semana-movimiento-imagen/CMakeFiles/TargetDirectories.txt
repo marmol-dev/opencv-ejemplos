@@ -1,0 +1,1 @@
+/home/martin/dev/c/opencv-ejemplos/4-semana-movimiento-imagen/CMakeFiles/opencv_test.dir

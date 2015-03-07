@@ -221,9 +221,6 @@ Punto parabolica(int tiempo, Velocidad vInicial, Punto pInicial){
     resultado.x = pInicial.x + vInicial.x * tiempoMs;
     resultado.y = pInicial.y + vInicial.y * tiempoMs + GRAVITY*((tiempoMs*tiempoMs)/2);
 
-    /*resultado.x = ((double) pInicial.x) + (double) vInicial.x * ((double) tiempo) / 1000.0;
-    resultado.y = ((double) pInicial.y) + (double) vInicial.y * ((double) tiempo) / 1000.0;*/
-
     return resultado;
 }
 
@@ -275,8 +272,8 @@ void movimiento(IplImage* fondo, IplImage* obj, Punto pInicial, int grado, int f
 }
 
 int main(int argc, char** argv) {
-    if (argc != 3) {
-        printf("Usage: %s image1 image2\n", argv[0]);
+    if (argc != 8) {
+        printf("Usage: %s image1 image2 posX posY grado fps velocidad\n", argv[0]);
         return EXIT_FAILURE;
     }
     IplImage* Img1 = cvLoadImage(argv[1], CV_LOAD_IMAGE_UNCHANGED);
@@ -294,10 +291,18 @@ int main(int argc, char** argv) {
     //desplazar(Img1, Img2, 0, 0, 200, 40, 50, 10);
 
     Punto inicial;
-    inicial.x = 0;
-    inicial.y = 100;
-    //run the movimiento function from (0,100) with an angle of -45 degrees (up), 25 fps and an initial velocity of 25 pixels per second
-    movimiento(Img1, Img2, inicial, -45, 120, 60);
+    inicial.x = atoi(argv[3]);
+    inicial.y = atoi(argv[4]);
+    
+    /*
+     * Fondo: Img1
+     * Objeto: Img2
+     * pInicial: inicial
+     * grado: -45
+     * fps : 24 frames por segundo
+     * velocidad: 300 pixeles por segundo
+     */
+    movimiento(Img1, Img2, inicial, atoi(argv[5]), atoi(argv[6]), atoi(argv[7]));
 
     cvWaitKey(0);
     cvDestroyWindow(nombreVentanaImagen);

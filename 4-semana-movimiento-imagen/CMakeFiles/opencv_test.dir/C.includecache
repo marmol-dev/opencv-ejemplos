@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/martin/dev/c/opencv-ejemplos/4-semana-movimiento-imagen/main.c
+stdio.h
+-
+stdlib.h
+-
+opencv/cv.h
+-
+opencv/highgui.h
+-
+math.h
+-
+

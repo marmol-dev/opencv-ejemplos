@@ -1,0 +1,4 @@
+Scanning dependencies of target opencv_test
+[100%] Building C object CMakeFiles/opencv_test.dir/main.c.o
+Linking C executable opencv_test
+[100%] Built target opencv_test

@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/martin/dev/c/opencv-ejemplos/4-semana-movimiento-imagen",
+  "command": "/usr/bin/gcc   -g3 -gdwarf-2 -I/usr/include/opencv    -o CMakeFiles/opencv_test.dir/main.c.o   -c /home/martin/dev/c/opencv-ejemplos/4-semana-movimiento-imagen/main.c",
+  "file": "/home/martin/dev/c/opencv-ejemplos/4-semana-movimiento-imagen/main.c"
+}
+]
