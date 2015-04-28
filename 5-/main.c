@@ -7,11 +7,34 @@
 char * NOMBRE_VENTANA = "Sprite";
 
 IplImage* mezclarImagenesSSE(IplImage* background, IplImage* obj, int x, int y){
-    IplImage* res = cvCloneImage(background);
+    IplImage* resultado = cvCloneImage(background);
 
+    //definimos los punteros
+    uchar* pBg,
+        * pRes,
+        * pObj;
 
+    __m128i reg;
 
-    return res;
+    //fila y columna respecto a la imagen de fondo (background)
+    int fila, columna, component;
+
+    for (fila = y; fila < (y + obj -> height); fila ++){
+        pBg = (uchar*) background -> imageData + background -> widthStep * fila + x * 4;
+        pRes = (uchar*) resultado -> imageData + resultado -> widthStep * fila + x * 4;
+        pObj = (uchar*) obj -> imageData + obj -> widthStep * (fila - y);
+
+        for (columna = x; columna < (x + obj -> width); columna += 4){
+            reg = _mm_loadu_si128((__m128i*) pObj);
+            _mm_storeu_si128((__m128i*) pRes, reg);
+
+            pRes += 16;
+            pBg += 16;
+            pObj += 16;
+        }
+    }
+
+    return resultado;
 }
 
 IplImage* extraerSubzona(IplImage* original, int xInicial, int yInicial, int xFinal, int yFinal){
@@ -31,7 +54,7 @@ IplImage* extraerSubzona(IplImage* original, int xInicial, int yInicial, int xFi
 
         for (columna = xInicial; columna < xFinal; columna+= 4){
             reg = _mm_loadu_si128((__m128i *) pOr);
-            _mm_store_si128((__m128i *) pRes, reg);
+            _mm_storeu_si128((__m128i *) pRes, reg);
             pOr += 16;
             pRes += 16;
         }
@@ -61,7 +84,8 @@ int main(int argc, char** argv){
     cvNamedWindow(NOMBRE_VENTANA, 1);
 
     IplImage* porcion = extraerSubzona(sprite, 780, 908, 780 + 56, 908 + 56);
-    cvShowImage(NOMBRE_VENTANA, porcion);
+    IplImage* mezcla = mezclarImagenesSSE(background, porcion, 0, 0);
+    cvShowImage(NOMBRE_VENTANA, mezcla);
     cvWaitKey(0);
 
     cvReleaseImage(&background);
