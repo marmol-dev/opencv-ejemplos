@@ -41,7 +41,11 @@ IplImage* extraerSubzona(IplImage* original, int xInicial, int yInicial, int xFi
     CvSize tam = cvSize(xFinal - xInicial, yFinal - yInicial);
     IplImage* res = cvCreateImage(tam, IPL_DEPTH_8U, 4);
 
-    __m128i reg;
+    __m128i reg,
+            mas,
+            temp1 = _mm_set1_epi32(0xFF000000),
+            temp2 = temp1 & ~temp1,//todo ceros
+            temp3;
 
     unsigned char* pOr,
                 * pRes;
@@ -54,6 +58,9 @@ IplImage* extraerSubzona(IplImage* original, int xInicial, int yInicial, int xFi
 
         for (columna = xInicial; columna < xFinal; columna+= 4){
             reg = _mm_loadu_si128((__m128i *) pOr);
+            mas = reg & temp1;
+            temp3 = _mm_cmpeq_epi32(temp2, mas);
+
             _mm_storeu_si128((__m128i *) pRes, reg);
             pOr += 16;
             pRes += 16;
