@@ -14,7 +14,13 @@ IplImage* mezclarImagenesSSE(IplImage* background, IplImage* obj, int x, int y){
         * pRes,
         * pObj;
 
-    __m128i reg;
+    __m128i rObjeto,
+            rRes,
+            rFondo,
+            fceros = _mm_set1_epi32(0xFF000000),
+            ceros = _mm_set1_epi32(0x00000000),
+            mascara,
+            temp1, temp2;
 
     //fila y columna respecto a la imagen de fondo (background)
     int fila, columna, component;
@@ -25,8 +31,15 @@ IplImage* mezclarImagenesSSE(IplImage* background, IplImage* obj, int x, int y){
         pObj = (uchar*) obj -> imageData + obj -> widthStep * (fila - y);
 
         for (columna = x; columna < (x + obj -> width); columna += 4){
-            reg = _mm_loadu_si128((__m128i*) pObj);
-            _mm_storeu_si128((__m128i*) pRes, reg);
+            rObjeto = _mm_loadu_si128((__m128i*) pObj);
+            rFondo = _mm_loadu_si128((__m128i*) pBg);
+            rRes = _mm_loadu_si128((__m128i*) pRes);
+
+            temp1 = _mm_and_si128(rObjeto, fceros);
+            mascara = _mm_cmpeq_epi32(temp1, ceros);
+
+            rRes = _mm_or_si128(_mm_and_si128(rFondo, mascara), _mm_andnot_si128(mascara , rObjeto));
+            _mm_storeu_si128((__m128i*) pRes, rRes);
 
             pRes += 16;
             pBg += 16;
