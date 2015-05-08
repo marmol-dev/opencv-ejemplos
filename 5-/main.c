@@ -14,6 +14,7 @@ IplImage* mezclarImagenesSSE(IplImage* background, IplImage* obj, int x, int y){
         * pRes,
         * pObj;
 
+
     __m128i rObjeto,
             rRes,
             rFondo,
@@ -21,6 +22,7 @@ IplImage* mezclarImagenesSSE(IplImage* background, IplImage* obj, int x, int y){
             ceros = _mm_set1_epi32(0x00000000),
             mascara,
             temp1, temp2;
+
 
     //fila y columna respecto a la imagen de fondo (background)
     int fila, columna, component;
@@ -31,6 +33,7 @@ IplImage* mezclarImagenesSSE(IplImage* background, IplImage* obj, int x, int y){
         pObj = (uchar*) obj -> imageData + obj -> widthStep * (fila - y);
 
         for (columna = x; columna < (x + obj -> width); columna += 4){
+
             rObjeto = _mm_loadu_si128((__m128i*) pObj);
             rFondo = _mm_loadu_si128((__m128i*) pBg);
             rRes = _mm_loadu_si128((__m128i*) pRes);
@@ -40,7 +43,6 @@ IplImage* mezclarImagenesSSE(IplImage* background, IplImage* obj, int x, int y){
 
             rRes = _mm_or_si128(_mm_and_si128(rFondo, mascara), _mm_andnot_si128(mascara , rObjeto));
             _mm_storeu_si128((__m128i*) pRes, rRes);
-
             pRes += 16;
             pBg += 16;
             pObj += 16;
@@ -54,11 +56,7 @@ IplImage* extraerSubzona(IplImage* original, int xInicial, int yInicial, int xFi
     CvSize tam = cvSize(xFinal - xInicial, yFinal - yInicial);
     IplImage* res = cvCreateImage(tam, IPL_DEPTH_8U, 4);
 
-    __m128i reg,
-            mas,
-            temp1 = _mm_set1_epi32(0xFF000000),
-            temp2 = temp1 & ~temp1,//todo ceros
-            temp3;
+    __m128i temp1;
 
     unsigned char* pOr,
                 * pRes;
@@ -70,11 +68,8 @@ IplImage* extraerSubzona(IplImage* original, int xInicial, int yInicial, int xFi
         pRes = (unsigned char*) res -> imageData + (fila - yInicial) * res -> widthStep;
 
         for (columna = xInicial; columna < xFinal; columna+= 4){
-            reg = _mm_loadu_si128((__m128i *) pOr);
-            mas = reg & temp1;
-            temp3 = _mm_cmpeq_epi32(temp2, mas);
-
-            _mm_storeu_si128((__m128i *) pRes, reg);
+            temp1 = _mm_loadu_si128((__m128i *) pOr);
+            _mm_storeu_si128((__m128i *) pRes, temp1);
             pOr += 16;
             pRes += 16;
         }
@@ -104,7 +99,7 @@ int main(int argc, char** argv){
     cvNamedWindow(NOMBRE_VENTANA, 1);
 
     IplImage* porcion = extraerSubzona(sprite, 780, 908, 780 + 56, 908 + 56);
-    IplImage* mezcla = mezclarImagenesSSE(background, porcion, 0, 0);
+    IplImage* mezcla = mezclarImagenesSSE(background, porcion, 100, 100);
     cvShowImage(NOMBRE_VENTANA, mezcla);
     cvWaitKey(0);
 
